@@ -1,0 +1,2569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#1a1a2e">
+    <title>PK QC Portal v2.0</title>
+    <link rel="manifest" href="manifest.json">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #00d4ff;
+            --success: #00ff88;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --purple: #9b59b6;
+            --dark-bg: #1a1a2e;
+            --card-bg: rgba(255,255,255,0.05);
+            --border-color: rgba(255,255,255,0.1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px;
+            padding-bottom: 100px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo i {
+            font-size: 22px;
+            color: var(--primary);
+        }
+
+        .logo h1 {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        .version-badge {
+            background: rgba(0,212,255,0.2);
+            color: var(--primary);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 9px;
+            font-weight: 600;
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: rgba(0,0,0,0.3);
+            cursor: pointer;
+            font-size: 11px;
+        }
+
+        .connection-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #666;
+        }
+
+        .connection-dot.connected {
+            background: var(--success);
+            box-shadow: 0 0 8px var(--success);
+            animation: pulse 2s infinite;
+        }
+
+        .connection-dot.disconnected {
+            background: var(--danger);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .header-actions {
+            display: none;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .mobile-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(26, 26, 46, 0.98);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(0,212,255,0.3);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 5px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 12px;
+            border: none;
+            background: transparent;
+            color: #888;
+            font-size: 10px;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .nav-btn i {
+            font-size: 18px;
+        }
+
+        .nav-btn:active, .nav-btn.active {
+            background: rgba(0,212,255,0.15);
+            color: var(--primary);
+        }
+
+        .nav-badge {
+            position: absolute;
+            top: 2px;
+            right: 5px;
+            background: var(--danger);
+            color: #fff;
+            font-size: 9px;
+            padding: 2px 5px;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+
+        .btn {
+            padding: 12px 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, #0099cc 100%);
+            color: #fff;
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success) 0%, #00cc6a 100%);
+            color: #000;
+        }
+
+        .btn-purple {
+            background: linear-gradient(135deg, var(--purple) 0%, #8e44ad 100%);
+            color: #fff;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger) 0%, #c0392b 100%);
+            color: #fff;
+        }
+
+        .btn-small {
+            padding: 8px 14px;
+            font-size: 12px;
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+            opacity: 0.9;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title i {
+            color: var(--primary);
+        }
+
+        .dropdown-wrap {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .dropdown {
+            width: 100%;
+            padding: 14px 45px 14px 15px;
+            font-size: 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+            cursor: pointer;
+            appearance: none;
+            transition: all 0.3s;
+        }
+
+        .dropdown:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(0,212,255,0.2);
+        }
+
+        .dropdown option {
+            background: #1a1a2e;
+            color: #fff;
+        }
+
+        .dropdown-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            pointer-events: none;
+        }
+
+        .badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge-zone {
+            background: linear-gradient(135deg, var(--success) 0%, #00cc6a 100%);
+            color: #000;
+        }
+
+        .badge-nonzone {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: #fff;
+        }
+
+        .badge-count {
+            background: rgba(0,212,255,0.2);
+            color: var(--primary);
+            padding: 4px 10px;
+            font-size: 11px;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-CREATED { background: #3498db33; color: #3498db; }
+        .status-ACCEPTED { background: #9b59b633; color: #9b59b6; }
+        .status-PICKUP_READY { background: #e67e2233; color: #e67e22; }
+        .status-PICKUP_SUCCESSFUL { background: #f39c1233; color: #f39c12; }
+        .status-QC_PENDING { background: #e74c3c33; color: #e74c3c; }
+        .status-QC_HOLD { background: #c0392b33; color: #c0392b; }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .vendor-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .vendor-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .order-card {
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s;
+        }
+
+        .order-card:active {
+            background: rgba(0,212,255,0.1);
+            transform: scale(0.98);
+        }
+
+        .order-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .order-id {
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .order-meta {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .meta-label {
+            font-size: 10px;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        .meta-value {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .order-card .btn {
+            width: 100%;
+        }
+
+        .item-card {
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s;
+        }
+
+        .item-card.selected {
+            border-color: var(--primary);
+            background: rgba(0,212,255,0.1);
+        }
+
+        .item-card.completed {
+            border-color: var(--success);
+            background: rgba(0,255,136,0.1);
+        }
+
+        .item-title {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .item-details {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 12px;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .item-actions .btn {
+            flex: 1;
+        }
+
+        .order-info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .info-box {
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            padding: 12px;
+        }
+
+        .info-box label {
+            font-size: 10px;
+            color: #888;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .info-box span {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .qc-form {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .qc-form.active {
+            display: block;
+        }
+
+        .qc-item-bar {
+            background: rgba(0,212,255,0.1);
+            border-radius: 12px;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .qc-item-bar .item-stat label {
+            font-size: 9px;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        .qc-item-bar .item-stat span {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary);
+            display: block;
+        }
+
+        .grading-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .grading-box {
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .grading-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(0,212,255,0.3);
+        }
+
+        .grade-inputs {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .grade-input {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .grade-input label {
+            font-size: 10px;
+            color: #888;
+            font-weight: 600;
+        }
+
+        .grade-input input {
+            width: 100%;
+            padding: 10px 5px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+            font-size: 15px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .grade-input input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .grade-input.total input {
+            background: rgba(0,212,255,0.15);
+            border-color: rgba(0,212,255,0.4);
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .grade-input.total label {
+            color: var(--primary);
+        }
+
+        .qcer-section {
+            margin-top: 20px;
+        }
+
+        .qcer-section label {
+            display: block;
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .qcer-section label::after {
+            content: ' *';
+            color: var(--danger);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .form-actions .btn {
+            flex: 1;
+        }
+
+        .results-section {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .results-section.active {
+            display: block;
+        }
+
+        .result-card {
+            background: rgba(0,255,136,0.1);
+            border-left: 4px solid var(--success);
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-radius: 0 10px 10px 0;
+            position: relative;
+        }
+
+        .result-title {
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        .result-details {
+            font-size: 11px;
+            color: #aaa;
+        }
+
+        .result-meta {
+            font-size: 10px;
+            color: #666;
+            margin-top: 6px;
+        }
+
+        .result-delete {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--danger);
+            border: none;
+            color: #fff;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            padding: 12px 20px;
+            border-radius: 10px;
+            background: var(--success);
+            color: #000;
+            font-weight: 600;
+            font-size: 13px;
+            transition: transform 0.3s;
+            z-index: 1001;
+            max-width: 90%;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast.error {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .toast.warning {
+            background: var(--warning);
+            color: #000;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+        }
+
+        .empty-state i {
+            font-size: 40px;
+            margin-bottom: 15px;
+            color: #444;
+        }
+
+        .table-wrap {
+            display: none;
+            overflow-x: auto;
+            max-height: 400px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        .data-table th {
+            background: rgba(0,212,255,0.1);
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            position: sticky;
+            top: 0;
+        }
+
+        .data-table tr:hover {
+            background: rgba(255,255,255,0.03);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 6px;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 15px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-header h3 {
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-header h3 i {
+            color: var(--purple);
+        }
+
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .file-upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            background: rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-upload-area:hover {
+            border-color: var(--primary);
+            background: rgba(0,212,255,0.05);
+        }
+
+        .file-upload-area.drag-over {
+            border-color: var(--success);
+            background: rgba(0,255,136,0.1);
+        }
+
+        .file-upload-area i {
+            font-size: 48px;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .file-upload-area p {
+            margin: 5px 0;
+            font-size: 13px;
+        }
+
+        .file-upload-area .hint {
+            font-size: 11px;
+            color: #666;
+        }
+
+        .file-input-hidden {
+            display: none;
+        }
+
+        .selected-file {
+            background: rgba(0,212,255,0.1);
+            border-radius: 10px;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .selected-file-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .selected-file-info i {
+            font-size: 24px;
+            color: var(--primary);
+        }
+
+        .selected-file-name {
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .selected-file-size {
+            font-size: 11px;
+            color: #888;
+        }
+
+        .remove-file-btn {
+            background: var(--danger);
+            border: none;
+            color: #fff;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qc-qty-input {
+            margin-bottom: 20px;
+        }
+
+        .qc-qty-input label {
+            display: block;
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .qc-qty-input label::after {
+            content: ' *';
+            color: var(--danger);
+        }
+
+        .qc-qty-input input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+            font-size: 15px;
+            transition: all 0.2s;
+        }
+
+        .qc-qty-input input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .upload-progress {
+            display: none;
+            margin-bottom: 20px;
+        }
+
+        .upload-progress.active {
+            display: block;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .progress-text {
+            text-align: center;
+            font-size: 12px;
+            color: #888;
+        }
+
+        .upload-info {
+            background: rgba(155,89,182,0.15);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .upload-info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .upload-info-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .upload-info-row .label {
+            color: #888;
+        }
+
+        .upload-info-row .value {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .upload-instructions {
+            background: rgba(0,212,255,0.1);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .upload-instructions h4 {
+            font-size: 14px;
+            margin-bottom: 12px;
+            color: var(--primary);
+        }
+
+        .upload-instructions ol {
+            margin-left: 20px;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .upload-instructions li {
+            margin-bottom: 5px;
+        }
+
+        .folder-name-box {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .folder-name-box label {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .folder-name-box .folder-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--success);
+            font-family: monospace;
+            letter-spacing: 1px;
+        }
+
+        .file-naming-tip {
+            background: rgba(243,156,18,0.15);
+            border-left: 3px solid var(--warning);
+            padding: 12px 15px;
+            border-radius: 0 10px 10px 0;
+            margin-bottom: 20px;
+            font-size: 12px;
+        }
+
+        .file-naming-tip strong {
+            color: var(--warning);
+        }
+
+        .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-footer .btn {
+            flex: 1;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        .error-banner {
+            background: rgba(231,76,60,0.15);
+            border-left: 4px solid var(--danger);
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .error-banner h4 {
+            color: var(--danger);
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .error-banner p {
+            font-size: 12px;
+            line-height: 1.6;
+            color: #aaa;
+        }
+
+        .error-banner code {
+            background: rgba(0,0,0,0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                padding: 25px;
+                padding-bottom: 30px;
+            }
+
+            .header {
+                padding: 15px 0;
+            }
+
+            .logo i {
+                font-size: 28px;
+            }
+
+            .logo h1 {
+                font-size: 22px;
+            }
+
+            .header-actions {
+                display: flex;
+            }
+
+            .mobile-nav {
+                display: none;
+            }
+
+            .card {
+                padding: 25px;
+            }
+
+            .card-title {
+                font-size: 18px;
+            }
+
+            .table-wrap {
+                display: block;
+            }
+
+            .cards-list {
+                display: none;
+            }
+
+            .order-info-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+
+            .grading-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .form-actions .btn {
+                flex: none;
+                min-width: 180px;
+            }
+
+            .toast {
+                bottom: 30px;
+                left: auto;
+                right: 30px;
+                transform: translateX(150%);
+            }
+
+            .toast.show {
+                transform: translateX(0);
+            }
+
+            .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .grading-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 767px) {
+            .cards-list {
+                display: block;
+            }
+
+            .table-wrap {
+                display: none;
+            }
+
+            .order-info-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .grading-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .item-actions {
+                flex-direction: column;
+            }
+
+            .item-actions .btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .container {
+                padding: 10px;
+            }
+
+            .grade-inputs {
+                gap: 5px;
+            }
+
+            .grade-input input {
+                padding: 8px 3px;
+                font-size: 14px;
+            }
+
+            .qc-item-bar {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .qc-item-bar .item-stat:last-child {
+                grid-column: span 2;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-clipboard-check"></i>
+                <h1>PK <span>QC</span> Portal</h1>
+                <span class="version-badge">v2.0</span>
+            </div>
+            
+            <div class="connection-status" onclick="refreshData()">
+                <div id="connDot" class="connection-dot disconnected"></div>
+                <span id="connText">Connecting...</span>
+            </div>
+
+            <div class="header-actions">
+                <button class="btn btn-small btn-primary" onclick="refreshData()">
+                    <i class="fas fa-refresh"></i> Refresh
+                </button>
+                <button class="btn btn-small btn-secondary" onclick="syncPending()">
+                    <i class="fas fa-cloud-upload-alt"></i> Sync
+                </button>
+                <button class="btn btn-small btn-success" onclick="exportCSV()">
+                    <i class="fas fa-download"></i> Export
+                </button>
+            </div>
+        </header>
+
+        <div id="page1" class="page active">
+            <div id="errorBanner" class="error-banner" style="display:none;">
+                <h4><i class="fas fa-exclamation-triangle"></i> Setup Required</h4>
+                <p id="errorMessage">Checking connection...</p>
+            </div>
+
+            <div class="stats-grid" id="statsGrid" style="display:none;">
+                <div class="stat-card">
+                    <div class="stat-value" id="statOrders">0</div>
+                    <div class="stat-label">Total Orders</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="statItems">0</div>
+                    <div class="stat-label">Total Items</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="statQCd">0</div>
+                    <div class="stat-label">QC'd Today</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="statPending">0</div>
+                    <div class="stat-label">Pending Sync</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-store"></i>
+                    Select Vendor
+                </div>
+
+                <div class="dropdown-wrap">
+                    <select id="vendorSelect" class="dropdown" onchange="loadVendorOrders()">
+                        <option value="">-- Choose Vendor --</option>
+                    </select>
+                    <i class="fas fa-chevron-down dropdown-icon"></i>
+                </div>
+
+                <div class="loading" id="loading1">
+                    <div class="spinner"></div>
+                    <p>Loading orders...</p>
+                </div>
+
+                <div id="ordersContainer" style="display:none;">
+                    <div class="vendor-header">
+                        <span class="vendor-name">Orders for <strong id="vendorNameDisplay"></strong></span>
+                        <span id="zoneBadge" class="badge"></span>
+                        <span id="orderCount" class="badge badge-count">0</span>
+                    </div>
+
+                    <div class="cards-list" id="orderCards"></div>
+
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Fleek ID</th>
+                                    <th>Status</th>
+                                    <th>GMV (£)</th>
+                                    <th>Order Qty</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orderTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="emptyOrders" class="empty-state" style="display:none;">
+                    <i class="fas fa-inbox"></i>
+                    <p>No orders for this vendor</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="page2" class="page">
+            <button class="btn btn-secondary" onclick="goBack()" style="margin-bottom:15px;">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+
+            <div class="order-info-grid">
+                <div class="info-box">
+                    <label>Vendor</label>
+                    <span id="infoVendor">-</span>
+                </div>
+                <div class="info-box">
+                    <label>Fleek ID</label>
+                    <span id="infoFleekId">-</span>
+                </div>
+                <div class="info-box">
+                    <label>Status</label>
+                    <span id="infoStatus">-</span>
+                </div>
+                <div class="info-box">
+                    <label>GMV</label>
+                    <span id="infoGmv">-</span>
+                </div>
+                <div class="info-box">
+                    <label>Zone</label>
+                    <span id="infoZone">-</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-boxes"></i>
+                    Items - Tap to QC
+                </div>
+
+                <div class="loading" id="loading2">
+                    <div class="spinner"></div>
+                    <p>Loading items...</p>
+                </div>
+
+                <div class="cards-list" id="itemCards"></div>
+
+                <div class="table-wrap" id="itemsTableWrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Item Title</th>
+                                <th>Qty</th>
+                                <th>Grade</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="itemTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card qc-form" id="qcForm">
+                <div class="card-title" style="color:var(--primary);">
+                    <i class="fas fa-clipboard-check"></i>
+                    QC Grading Form
+                </div>
+
+                <div class="qc-item-bar">
+                    <div class="item-stat">
+                        <label>Item</label>
+                        <span id="qcItemName">-</span>
+                    </div>
+                    <div class="item-stat">
+                        <label>Original Qty</label>
+                        <span id="qcOrigQty">0</span>
+                    </div>
+                    <div class="item-stat">
+                        <label>Total QC</label>
+                        <span id="qcTotalQty">0</span>
+                    </div>
+                </div>
+
+                <div class="grading-grid">
+                    <div class="grading-box">
+                        <div class="grading-title">📦 Normal</div>
+                        <div class="grade-inputs">
+                            <div class="grade-input"><label>A</label><input type="number" id="normalA" inputmode="numeric" min="0" oninput="calcTotal()"></div>
+                            <div class="grade-input"><label>B</label><input type="number" id="normalB" inputmode="numeric" min="0" oninput="calcTotal()"></div>
+                            <div class="grade-input"><label>C</label><input type="number" id="normalC" inputmode="numeric" min="0" oninput="calcTotal()"></div>
+                            <div class="grade-input total"><label>Qty</label><input type="number" id="normalQty" readonly></div>
+                        </div>
+                    </div>
+
+                    <div class="grading-box">
+                        <div class="grading-title">📏 Oversize</div>
+                        <div class="grade-inputs">
+                            <div class="grade-input"><label>A</label><input type="number" id="oversizeA" inputmode="numeric" min="0" oninput="calcTotal()"></div>
+                            <div class="grade-input"><label>B</label><input type="number" id="oversizeB" inputmode="numeric" min="0" oninput="calcTotal()"></div>
+                            <div class="grade-input"><label>C</label><input type="number" id="oversizeC" inputmode="numeric" min="0" oninput="calcTotal()"></div>
+                            <div class="grade-input total"><label>Qty</label><input type="number" id="oversizeQty" readonly></div>
+                        </div>
+                    </div>
+
+                    <div class="grading-box">
+                        <div class="grading-title">📐 Undersize</div>
+                        <div class="grade-inputs">
+                            <div class="grade-input"><label>A</label><input type="number" id="undersizeA" inputmode="numeric" min="0" oninput="calcTotal()"></div>
+                            <div class="grade-input"><label>B</label><input type="number" id="undersizeB" inputmode="numeric" min="0" oninput="calcTotal()"></div>
+                            <div class="grade-input"><label>C</label><input type="number" id="undersizeC" inputmode="numeric" min="0" oninput="calcTotal()"></div>
+                            <div class="grade-input total"><label>Qty</label><input type="number" id="undersizeQty" readonly></div>
+                        </div>
+                    </div>
+
+                    <div class="grading-box">
+                        <div class="grading-title">🔧 Rework</div>
+                        <div class="grade-inputs">
+                            <div class="grade-input"><label>A</label><input type="number" id="reworkA" inputmode="numeric" min="0" oninput="calcTotal()"></div>
+                            <div class="grade-input"><label>B</label><input type="number" id="reworkB" inputmode="numeric" min="0" oninput="calcTotal()"></div>
+                            <div class="grade-input"><label>C</label><input type="number" id="reworkC" inputmode="numeric" min="0" oninput="calcTotal()"></div>
+                            <div class="grade-input total"><label>Qty</label><input type="number" id="reworkQty" readonly></div>
+                        </div>
+                    </div>
+
+                    <div class="grading-box">
+                        <div class="grading-title">⚠️ Fake</div>
+                        <div class="grade-inputs">
+                            <div class="grade-input"><label>A</label><input type="number" id="fakeA" inputmode="numeric" min="0" oninput="calcTotal()"></div>
+                            <div class="grade-input"><label>B</label><input type="number" id="fakeB" inputmode="numeric" min="0" oninput="calcTotal()"></div>
+                            <div class="grade-input"><label>C</label><input type="number" id="fakeC" inputmode="numeric" min="0" oninput="calcTotal()"></div>
+                            <div class="grade-input total"><label>Qty</label><input type="number" id="fakeQty" readonly></div>
+                        </div>
+                    </div>
+
+                    <div class="grading-box">
+                        <div class="grading-title">🏷️ Other Brand</div>
+                        <div class="grade-inputs">
+                            <div class="grade-input"><label>A</label><input type="number" id="otherBrandA" inputmode="numeric" min="0" oninput="calcTotal()"></div>
+                            <div class="grade-input"><label>B</label><input type="number" id="otherBrandB" inputmode="numeric" min="0" oninput="calcTotal()"></div>
+                            <div class="grade-input"><label>C</label><input type="number" id="otherBrandC" inputmode="numeric" min="0" oninput="calcTotal()"></div>
+                            <div class="grade-input total"><label>Qty</label><input type="number" id="otherBrandQty" readonly></div>
+                        </div>
+                    </div>
+
+                    <div class="grading-box">
+                        <div class="grading-title">🏷️ Missing Tags</div>
+                        <div class="grade-inputs">
+                            <div class="grade-input"><label>A</label><input type="number" id="missingTagsA" inputmode="numeric" min="0" oninput="calcTotal()"></div>
+                            <div class="grade-input"><label>B</label><input type="number" id="missingTagsB" inputmode="numeric" min="0" oninput="calcTotal()"></div>
+                            <div class="grade-input"><label>C</label><input type="number" id="missingTagsC" inputmode="numeric" min="0" oninput="calcTotal()"></div>
+                            <div class="grade-input total"><label>Qty</label><input type="number" id="missingTagsQty" readonly></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="qcer-section">
+                    <label>QCer Name</label>
+                    <select id="qcerName" class="dropdown">
+                        <option value="">-- Select QCer --</option>
+                        <option>Noman</option>
+                        <option>Awais</option>
+                        <option>Amjad</option>
+                        <option>Saud</option>
+                        <option>Asad ullah</option>
+                        <option>Khalid</option>
+                        <option>Rohan</option>
+                        <option>W/O QC</option>
+                        <option>Shahzaib</option>
+                        <option>Ahsan</option>
+                        <option>Abu Bakar</option>
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn btn-success" onclick="submitQC()">
+                        <i class="fas fa-check"></i> Submit QC
+                    </button>
+                    <button class="btn btn-secondary" onclick="clearForm()">
+                        <i class="fas fa-eraser"></i> Clear
+                    </button>
+                </div>
+            </div>
+
+            <div class="results-section" id="resultsSection">
+                <div class="card-title" style="color:var(--success);">
+                    <i class="fas fa-check-circle"></i>
+                    Submitted Results
+                </div>
+                <div id="resultsList"></div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="mobile-nav">
+        <button class="nav-btn" onclick="refreshData()">
+            <i class="fas fa-refresh"></i>
+            <span>Refresh</span>
+        </button>
+        <button class="nav-btn" onclick="syncPending()">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <span>Sync</span>
+            <span id="syncBadge" class="nav-badge" style="display:none;">0</span>
+        </button>
+        <button class="nav-btn" onclick="exportCSV()">
+            <i class="fas fa-download"></i>
+            <span>Export</span>
+        </button>
+        <button class="nav-btn" onclick="showClearConfirm()">
+            <i class="fas fa-trash"></i>
+            <span>Clear</span>
+        </button>
+    </nav>
+
+    <div class="modal-overlay" id="videoModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-video"></i> Upload Video</h3>
+                <button class="modal-close" onclick="closeVideoModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="upload-info">
+                    <div class="upload-info-row">
+                        <span class="label">Fleek ID</span>
+                        <span class="value" id="uploadFleekId">-</span>
+                    </div>
+                    <div class="upload-info-row">
+                        <span class="label">Vendor</span>
+                        <span class="value" id="uploadVendor">-</span>
+                    </div>
+                    <div class="upload-info-row">
+                        <span class="label">Item</span>
+                        <span class="value" id="uploadItemName">-</span>
+                    </div>
+                    <div class="upload-info-row">
+                        <span class="label">Original Qty</span>
+                        <span class="value" id="uploadOrigQty">-</span>
+                    </div>
+                </div>
+
+                <div class="qc-qty-input">
+                    <label>QC'd Quantity (for this video)</label>
+                    <input type="number" id="videoQcQty" min="1" placeholder="Enter QC'd quantity">
+                </div>
+
+                <div class="file-upload-area" id="uploadArea" onclick="document.getElementById('videoFile').click()">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p><strong>Click to select video</strong></p>
+                    <p class="hint">or drag and drop here</p>
+                    <p class="hint">Supports: MP4, MOV, AVI (Max 100MB)</p>
+                </div>
+
+                <input type="file" id="videoFile" class="file-input-hidden" accept="video/*" onchange="handleFileSelect(event)">
+
+                <div id="selectedFileInfo" style="display:none;"></div>
+
+                <div class="upload-progress" id="uploadProgress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-text" id="progressText">Uploading...</div>
+                </div>
+
+                <div class="upload-instructions">
+                    <h4>📝 File will be saved as:</h4>
+                    <p style="margin:10px 0;"><strong>Folder:</strong> <code id="uploadFolderName">-</code></p>
+                    <p style="margin:10px 0;"><strong>File:</strong> <code id="uploadFileName">-</code></p>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeVideoModal()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button class="btn btn-purple" id="uploadBtn" onclick="uploadVideo()" disabled>
+                    <i class="fas fa-upload"></i> Upload Video
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script>
+        // ===== CONFIG - FULLY CONFIGURED =====
+        const API_URL = 'https://script.google.com/macros/s/AKfycby15JLR-Q7ZBeqK0pTmbdNdEwKMrU13gEBqc434qXhkTEjWKEX4nERFFKXJpmvQn_t6/exec';
+        
+        const DRIVE_FOLDER_URL = 'https://drive.google.com/drive/u/0/folders/1myfWEdRk9g82CZGHIQOUtTZaFfxgDa5H';
+        const SHEET_ID = '1cpujcQ7kheqGi2ZGJ1jyPM66qsq2ZIn3w8OuiMOpgIw';
+
+        // ===== STATE =====
+        let ordersData = [];
+        let itemsData = [];
+        let currentVendor = null;
+        let currentOrder = null;
+        let currentItem = null;
+        let qcResults = [];
+        let uploadItemInfo = null;
+        let completedItems = new Set();
+        let selectedVideoFile = null;
+
+        // ===== INIT =====
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSaved();
+            loadData();
+            updateStats();
+            setupDragAndDrop();
+        });
+
+        // ===== DATA LOADING =====
+        async function loadData() {
+            const loading = document.getElementById('loading1');
+            const dropdown = document.getElementById('vendorSelect');
+            const errorBanner = document.getElementById('errorBanner');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            loading.classList.add('active');
+            dropdown.disabled = true;
+            dropdown.innerHTML = '<option>Loading...</option>';
+            setConnected('connecting');
+
+            // Check if API_URL is set
+            if (API_URL === 'REPLACE_WITH_YOUR_WEB_APP_URL') {
+                loading.classList.remove('active');
+                dropdown.disabled = true;
+                dropdown.innerHTML = '<option>-- Setup Required --</option>';
+                setConnected(false);
+                
+                errorBanner.style.display = 'block';
+                errorMessage.innerHTML = `
+                    <strong>⚠️ API Not Configured</strong><br><br>
+                    Please follow these steps:<br>
+                    1. Open your Google Sheet: <a href="https://docs.google.com/spreadsheets/d/${SHEET_ID}/edit" target="_blank" style="color:var(--primary);">Open Sheet</a><br>
+                    2. Go to Extensions → Apps Script<br>
+                    3. Paste the Apps Script code (see artifact)<br>
+                    4. Deploy as Web App (Anyone access)<br>
+                    5. Copy Web App URL<br>
+                    6. Replace <code>REPLACE_WITH_YOUR_WEB_APP_URL</code> in this HTML file
+                `;
+                return;
+            }
+
+            try {
+                const res = await fetch(API_URL);
+                
+                if (!res.ok) {
+                    throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+                }
+                
+                const data = await res.json();
+
+                if (data.success) {
+                    ordersData = data.orders.map(o => ({
+                        fleek_id: o.fleek_id ? o.fleek_id.toString() : '',
+                        vendor: o.vendor ? o.vendor.toString() : '',
+                        status: o.latest_status ? o.latest_status.toString() : 'CREATED',
+                        gmv: parseFloat(o.gmv_gbp) || 0,
+                        zone_status: o.zone_status ? o.zone_status.toString() : 'Non-Zone',
+                        order_qty: parseInt(o.final_order_qty) || 0
+                    }));
+
+                    itemsData = data.items.map(i => ({
+                        fleek_id: i.fleek_id ? i.fleek_id.toString() : '',
+                        vendor: i.vendor ? i.vendor.toString() : '',
+                        item_title: i.item_title ? i.item_title.toString() : '',
+                        qty: parseInt(i.quantity) || 0,
+                        grade: i.grade ? i.grade.toString() : 'A'
+                    }));
+
+                    console.log('Data loaded:', {
+                        orders: ordersData.length,
+                        items: itemsData.length,
+                        sampleOrder: ordersData[0],
+                        sampleItem: itemsData[0]
+                    });
+
+                    setConnected(true);
+                    populateVendors();
+                    updateStats();
+                    toast(`✅ ${ordersData.length} orders, ${itemsData.length} items loaded`);
+                    document.getElementById('statsGrid').style.display = 'grid';
+                    errorBanner.style.display = 'none';
+                } else {
+                    throw new Error(data.message || 'API returned success:false');
+                }
+            } catch (e) {
+                console.error('Load error:', e);
+                setConnected(false);
+                dropdown.innerHTML = '<option>-- Error Loading --</option>';
+                
+                errorBanner.style.display = 'block';
+                errorMessage.innerHTML = `
+                    <strong>❌ Connection Failed</strong><br><br>
+                    Error: ${e.message}<br><br>
+                    <strong>Troubleshooting:</strong><br>
+                    1. Check if Apps Script is deployed correctly<br>
+                    2. Ensure "Who has access" is set to "Anyone"<br>
+                    3. Test your Web App URL directly in browser<br>
+                    4. Check sheet names: "Orders" and "Items"<br>
+                    5. Ensure sheets have data<br><br>
+                    <a href="https://docs.google.com/spreadsheets/d/${SHEET_ID}/edit" target="_blank" style="color:var(--primary);">Open Your Sheet</a>
+                `;
+                
+                toast('⚠️ Connection failed - check setup', true);
+            }
+
+            loading.classList.remove('active');
+            dropdown.disabled = false;
+        }
+
+        async function refreshData() {
+            toast('🔄 Refreshing...');
+            await loadData();
+        }
+
+        function setConnected(state) {
+            const dot = document.getElementById('connDot');
+            const text = document.getElementById('connText');
+            
+            if (state === 'connecting') {
+                dot.className = 'connection-dot';
+                text.textContent = 'Connecting...';
+            } else if (state === true) {
+                dot.className = 'connection-dot connected';
+                text.textContent = 'Online';
+            } else {
+                dot.className = 'connection-dot disconnected';
+                text.textContent = 'Offline';
+            }
+        }
+
+        function populateVendors() {
+            const dropdown = document.getElementById('vendorSelect');
+            dropdown.innerHTML = '<option value="">-- Choose Vendor --</option>';
+
+            const vendorMap = {};
+            ordersData.forEach(o => {
+                const vendorName = o.vendor ? o.vendor.toString().trim() : '';
+                if (vendorName && !vendorMap[vendorName]) {
+                    vendorMap[vendorName] = o.zone_status;
+                }
+            });
+
+            Object.keys(vendorMap).sort().forEach(v => {
+                const opt = document.createElement('option');
+                opt.value = v;
+                const indicator = vendorMap[v] === 'Zone' ? '🟢' : '🔴';
+                opt.textContent = `${v} ${indicator}`;
+                dropdown.appendChild(opt);
+            });
+            
+            console.log('Vendors loaded:', Object.keys(vendorMap).length);
+        }
+
+        function updateStats() {
+            const today = new Date().toDateString();
+            const todayQC = qcResults.filter(r => new Date(r.submitted_at).toDateString() === today);
+            const pendingSync = qcResults.filter(r => !r.synced);
+            
+            document.getElementById('statOrders').textContent = ordersData.length;
+            document.getElementById('statItems').textContent = itemsData.length;
+            document.getElementById('statQCd').textContent = todayQC.length;
+            document.getElementById('statPending').textContent = pendingSync.length;
+        }
+
+        function loadVendorOrders() {
+            const vendor = document.getElementById('vendorSelect').value;
+            const container = document.getElementById('ordersContainer');
+            const empty = document.getElementById('emptyOrders');
+
+            console.log('Selected vendor:', vendor);
+
+            if (!vendor) {
+                container.style.display = 'none';
+                empty.style.display = 'none';
+                return;
+            }
+
+            currentVendor = vendor;
+            
+            // Filter orders by vendor (exact match, case-sensitive)
+            const orders = ordersData.filter(o => {
+                const orderVendor = o.vendor ? o.vendor.toString().trim() : '';
+                return orderVendor === vendor;
+            });
+
+            console.log('Orders found for vendor:', orders.length);
+            console.log('Sample order:', orders[0]);
+
+            const zone = orders.length ? orders[0].zone_status : 'Unknown';
+
+            document.getElementById('vendorNameDisplay').textContent = vendor;
+            document.getElementById('orderCount').textContent = orders.length + ' orders';
+            
+            const badge = document.getElementById('zoneBadge');
+            badge.textContent = zone;
+            badge.className = 'badge ' + (zone === 'Zone' ? 'badge-zone' : 'badge-nonzone');
+
+            if (!orders.length) {
+                container.style.display = 'none';
+                empty.style.display = 'block';
+                console.log('No orders found for this vendor');
+                return;
+            }
+
+            // Mobile cards
+            const cards = document.getElementById('orderCards');
+            cards.innerHTML = orders.map(o => `
+                <div class="order-card">
+                    <div class="order-card-header">
+                        <span class="order-id">${o.fleek_id}</span>
+                        <span class="status-badge status-${o.status}">${o.status.replace(/_/g, ' ')}</span>
+                    </div>
+                    <div class="order-meta">
+                        <div class="meta-item"><span class="meta-label">GMV</span><span class="meta-value">£${parseFloat(o.gmv).toLocaleString()}</span></div>
+                        <div class="meta-item"><span class="meta-label">Order Qty</span><span class="meta-value">${parseInt(o.order_qty).toLocaleString()}</span></div>
+                        <div class="meta-item"><span class="meta-label">Zone</span><span class="meta-value">${o.zone_status === 'Zone' ? '🟢 Zone' : '🔴 Non-Zone'}</span></div>
+                    </div>
+                    <button class="btn btn-primary" onclick="viewOrder('${o.fleek_id}')">
+                        <i class="fas fa-eye"></i> View Items
+                    </button>
+                </div>
+            `).join('');
+
+            // Desktop table
+            const tbody = document.getElementById('orderTableBody');
+            tbody.innerHTML = orders.map(o => `
+                <tr>
+                    <td><strong>${o.fleek_id}</strong></td>
+                    <td><span class="status-badge status-${o.status}">${o.status.replace(/_/g, ' ')}</span></td>
+                    <td>£${parseFloat(o.gmv).toLocaleString()}</td>
+                    <td>${parseInt(o.order_qty).toLocaleString()}</td>
+                    <td>${o.zone_status === 'Zone' ? '🟢 Zone' : '🔴 Non-Zone'}</td>
+                    <td><button class="btn btn-small btn-primary" onclick="viewOrder('${o.fleek_id}')"><i class="fas fa-eye"></i> View</button></td>
+                </tr>
+            `).join('');
+
+            container.style.display = 'block';
+            empty.style.display = 'none';
+        }
+
+        function viewOrder(fleekId) {
+            currentOrder = ordersData.find(o => o.fleek_id === fleekId);
+            if (!currentOrder) return;
+
+            document.getElementById('infoVendor').textContent = currentOrder.vendor;
+            document.getElementById('infoFleekId').textContent = currentOrder.fleek_id;
+            document.getElementById('infoStatus').innerHTML = `<span class="status-badge status-${currentOrder.status}">${currentOrder.status.replace(/_/g, ' ')}</span>`;
+            document.getElementById('infoGmv').textContent = '£' + currentOrder.gmv.toLocaleString();
+            
+            const isZone = currentOrder.zone_status === 'Zone';
+            document.getElementById('infoZone').innerHTML = `<span class="badge ${isZone ? 'badge-zone' : 'badge-nonzone'}">${currentOrder.zone_status}</span>`;
+
+            document.getElementById('page1').classList.remove('active');
+            document.getElementById('page2').classList.add('active');
+
+            loadItems(fleekId);
+        }
+
+        function loadItems(fleekId) {
+            const loading = document.getElementById('loading2');
+            const cardsEl = document.getElementById('itemCards');
+
+            loading.classList.add('active');
+            cardsEl.innerHTML = '';
+            document.getElementById('qcForm').classList.remove('active');
+
+            setTimeout(() => {
+                loading.classList.remove('active');
+
+                const items = itemsData.filter(i => i.fleek_id === fleekId);
+
+                if (!items.length) {
+                    cardsEl.innerHTML = '<div class="empty-state"><i class="fas fa-box-open"></i><p>No items found</p></div>';
+                    return;
+                }
+
+                cardsEl.innerHTML = items.map((item, idx) => {
+                    const itemKey = `${fleekId}_${item.item_title}`;
+                    const isCompleted = completedItems.has(itemKey);
+                    return `
+                        <div class="item-card ${isCompleted ? 'completed' : ''}" id="itemCard${idx}">
+                            <div class="item-title">
+                                ${isCompleted ? '✅ ' : ''}${item.item_title}
+                            </div>
+                            <div class="item-details">
+                                <div class="meta-item"><span class="meta-label">Qty</span><span class="meta-value">${item.qty.toLocaleString()}</span></div>
+                                <div class="meta-item"><span class="meta-label">Grade</span><span class="meta-value">${item.grade}</span></div>
+                            </div>
+                            <div class="item-actions">
+                                <button class="btn btn-primary" onclick="selectItem(${idx}, '${item.item_title.replace(/'/g, "\\'")}', ${item.qty})">
+                                    <i class="fas fa-clipboard-check"></i> ${isCompleted ? 'Re-QC' : 'QC'}
+                                </button>
+                                <button class="btn btn-purple" onclick="openVideoModal('${currentOrder.fleek_id}', '${item.item_title.replace(/'/g, "\\'")}', ${item.qty})">
+                                    <i class="fas fa-video"></i> Upload Video
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                const tbody = document.getElementById('itemTableBody');
+                tbody.innerHTML = items.map((item, idx) => {
+                    const itemKey = `${fleekId}_${item.item_title}`;
+                    const isCompleted = completedItems.has(itemKey);
+                    return `
+                        <tr id="itemRow${idx}" ${isCompleted ? 'style="background:rgba(0,255,136,0.1);"' : ''}>
+                            <td>${idx + 1}</td>
+                            <td>${isCompleted ? '✅ ' : ''}${item.item_title}</td>
+                            <td>${item.qty.toLocaleString()}</td>
+                            <td>${item.grade}</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-small btn-primary" onclick="selectItem(${idx}, '${item.item_title.replace(/'/g, "\\'")}', ${item.qty})">
+                                        <i class="fas fa-clipboard-check"></i> ${isCompleted ? 'Re-QC' : 'QC'}
+                                    </button>
+                                    <button class="btn btn-small btn-purple" onclick="openVideoModal('${currentOrder.fleek_id}', '${item.item_title.replace(/'/g, "\\'")}', ${item.qty})">
+                                        <i class="fas fa-video"></i> Upload
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+                renderResults();
+            }, 300);
+        }
+
+        function goBack() {
+            document.getElementById('page2').classList.remove('active');
+            document.getElementById('page1').classList.add('active');
+            currentOrder = null;
+            currentItem = null;
+        }
+
+        function selectItem(idx, title, qty) {
+            document.querySelectorAll('.item-card').forEach(c => c.classList.remove('selected'));
+            document.querySelectorAll('#itemTableBody tr').forEach(r => r.style.background = '');
+
+            const card = document.getElementById('itemCard' + idx);
+            const row = document.getElementById('itemRow' + idx);
+            if (card) card.classList.add('selected');
+            if (row) row.style.background = 'rgba(0,212,255,0.15)';
+
+            currentItem = { idx, title, qty };
+
+            document.getElementById('qcItemName').textContent = title.length > 25 ? title.substring(0, 25) + '...' : title;
+            document.getElementById('qcOrigQty').textContent = qty.toLocaleString();
+            document.getElementById('qcTotalQty').textContent = '0';
+
+            clearForm();
+            document.getElementById('qcForm').classList.add('active');
+            document.getElementById('qcForm').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function calcTotal() {
+            const cats = ['normal', 'oversize', 'undersize', 'rework', 'fake', 'otherBrand', 'missingTags'];
+            let total = 0;
+
+            cats.forEach(cat => {
+                const a = parseInt(document.getElementById(cat + 'A').value) || 0;
+                const b = parseInt(document.getElementById(cat + 'B').value) || 0;
+                const c = parseInt(document.getElementById(cat + 'C').value) || 0;
+                const sum = a + b + c;
+                document.getElementById(cat + 'Qty').value = sum || '';
+                total += sum;
+            });
+
+            document.getElementById('qcTotalQty').textContent = total.toLocaleString();
+        }
+
+        function clearForm() {
+            const cats = ['normal', 'oversize', 'undersize', 'rework', 'fake', 'otherBrand', 'missingTags'];
+            cats.forEach(cat => {
+                document.getElementById(cat + 'A').value = '';
+                document.getElementById(cat + 'B').value = '';
+                document.getElementById(cat + 'C').value = '';
+                document.getElementById(cat + 'Qty').value = '';
+            });
+            document.getElementById('qcTotalQty').textContent = '0';
+        }
+
+        function submitQC() {
+            const qcer = document.getElementById('qcerName').value;
+            if (!qcer) {
+                toast('Select QCer name', true);
+                return;
+            }
+
+            const cats = ['normal', 'oversize', 'undersize', 'rework', 'fake', 'otherBrand', 'missingTags'];
+            let total = 0;
+            cats.forEach(cat => {
+                total += parseInt(document.getElementById(cat + 'Qty').value) || 0;
+            });
+
+            if (total === 0) {
+                toast('Enter at least one quantity', true);
+                return;
+            }
+
+            const result = {
+                fleek_id: currentOrder.fleek_id,
+                vendor: currentOrder.vendor,
+                zone_status: currentOrder.zone_status,
+                item_title: currentItem.title,
+                original_qty: currentItem.qty,
+                qc_qty: total,
+                normal_a: parseInt(document.getElementById('normalA').value) || null,
+                normal_b: parseInt(document.getElementById('normalB').value) || null,
+                normal_c: parseInt(document.getElementById('normalC').value) || null,
+                normal_qty: parseInt(document.getElementById('normalQty').value) || null,
+                oversize_a: parseInt(document.getElementById('oversizeA').value) || null,
+                oversize_b: parseInt(document.getElementById('oversizeB').value) || null,
+                oversize_c: parseInt(document.getElementById('oversizeC').value) || null,
+                oversize_qty: parseInt(document.getElementById('oversizeQty').value) || null,
+                undersize_a: parseInt(document.getElementById('undersizeA').value) || null,
+                undersize_b: parseInt(document.getElementById('undersizeB').value) || null,
+                undersize_c: parseInt(document.getElementById('undersizeC').value) || null,
+                undersize_qty: parseInt(document.getElementById('undersizeQty').value) || null,
+                rework_a: parseInt(document.getElementById('reworkA').value) || null,
+                rework_b: parseInt(document.getElementById('reworkB').value) || null,
+                rework_c: parseInt(document.getElementById('reworkC').value) || null,
+                rework_qty: parseInt(document.getElementById('reworkQty').value) || null,
+                fake_a: parseInt(document.getElementById('fakeA').value) || null,
+                fake_b: parseInt(document.getElementById('fakeB').value) || null,
+                fake_c: parseInt(document.getElementById('fakeC').value) || null,
+                fake_qty: parseInt(document.getElementById('fakeQty').value) || null,
+                other_brand_a: parseInt(document.getElementById('otherBrandA').value) || null,
+                other_brand_b: parseInt(document.getElementById('otherBrandB').value) || null,
+                other_brand_c: parseInt(document.getElementById('otherBrandC').value) || null,
+                other_brand_qty: parseInt(document.getElementById('otherBrandQty').value) || null,
+                missing_tags_a: parseInt(document.getElementById('missingTagsA').value) || null,
+                missing_tags_b: parseInt(document.getElementById('missingTagsB').value) || null,
+                missing_tags_c: parseInt(document.getElementById('missingTagsC').value) || null,
+                missing_tags_qty: parseInt(document.getElementById('missingTagsQty').value) || null,
+                qcer_name: qcer,
+                submitted_at: new Date().toISOString()
+            };
+
+            qcResults.push(result);
+            
+            const itemKey = `${currentOrder.fleek_id}_${currentItem.title}`;
+            completedItems.add(itemKey);
+            localStorage.setItem('completedItems', JSON.stringify([...completedItems]));
+            
+            saveToSheet(result);
+
+            toast('✅ QC submitted!');
+            clearForm();
+
+            document.querySelectorAll('.item-card').forEach(c => c.classList.remove('selected'));
+            document.querySelectorAll('#itemTableBody tr').forEach(r => r.style.background = '');
+            document.getElementById('qcForm').classList.remove('active');
+            
+            loadItems(currentOrder.fleek_id);
+            
+            currentItem = null;
+            updateStats();
+        }
+
+        function renderResults() {
+            const section = document.getElementById('resultsSection');
+            const list = document.getElementById('resultsList');
+
+            const results = qcResults.filter(r => r.fleek_id === currentOrder?.fleek_id);
+            if (!results.length) {
+                section.classList.remove('active');
+                return;
+            }
+
+            section.classList.add('active');
+            list.innerHTML = results.map((r, i) => `
+                <div class="result-card">
+                    <button class="result-delete" onclick="deleteResult(${qcResults.indexOf(r)})" title="Delete">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    <div class="result-title">${r.item_title.length > 35 ? r.item_title.substring(0, 35) + '...' : r.item_title}</div>
+                    <div class="result-details">
+                        <strong>Total: ${r.qc_qty}</strong> | 
+                        N:${r.normal_qty || 0} O:${r.oversize_qty || 0} U:${r.undersize_qty || 0} R:${r.rework_qty || 0}
+                    </div>
+                    <div class="result-meta">By ${r.qcer_name} • ${new Date(r.submitted_at).toLocaleString()}</div>
+                </div>
+            `).join('');
+        }
+
+        function deleteResult(index) {
+            if (confirm('Delete this QC result?')) {
+                const result = qcResults[index];
+                const itemKey = `${result.fleek_id}_${result.item_title}`;
+                completedItems.delete(itemKey);
+                localStorage.setItem('completedItems', JSON.stringify([...completedItems]));
+                
+                qcResults.splice(index, 1);
+                localStorage.setItem('qcResults', JSON.stringify(qcResults));
+                
+                renderResults();
+                loadItems(currentOrder.fleek_id);
+                updateStats();
+                updateBadge();
+                toast('Result deleted');
+            }
+        }
+
+        async function saveToSheet(result) {
+            let saved = JSON.parse(localStorage.getItem('qcResults') || '[]');
+            saved.push(result);
+            localStorage.setItem('qcResults', JSON.stringify(saved));
+            updateBadge();
+
+            const data = {
+                action: 'saveQC',
+                data: {
+                    fleekId: result.fleek_id, vendor: result.vendor, zoneStatus: result.zone_status,
+                    itemTitle: result.item_title, originalQty: result.original_qty, totalQCQty: result.qc_qty,
+                    normalA: result.normal_a || 0, normalB: result.normal_b || 0, normalC: result.normal_c || 0, normalQty: result.normal_qty || 0,
+                    oversizeA: result.oversize_a || 0, oversizeB: result.oversize_b || 0, oversizeC: result.oversize_c || 0, oversizeQty: result.oversize_qty || 0,
+                    undersizeA: result.undersize_a || 0, undersizeB: result.undersize_b || 0, undersizeC: result.undersize_c || 0, undersizeQty: result.undersize_qty || 0,
+                    reworkA: result.rework_a || 0, reworkB: result.rework_b || 0, reworkC: result.rework_c || 0, reworkQty: result.rework_qty || 0,
+                    fakeA: result.fake_a || 0, fakeB: result.fake_b || 0, fakeC: result.fake_c || 0, fakeQty: result.fake_qty || 0,
+                    otherBrandA: result.other_brand_a || 0, otherBrandB: result.other_brand_b || 0, otherBrandC: result.other_brand_c || 0, otherBrandQty: result.other_brand_qty || 0,
+                    missingTagsA: result.missing_tags_a || 0, missingTagsB: result.missing_tags_b || 0, missingTagsC: result.missing_tags_c || 0, missingTagsQty: result.missing_tags_qty || 0,
+                    qcerName: result.qcer_name, submittedAt: result.submitted_at
+                }
+            };
+
+            try {
+                await fetch(API_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                saved = JSON.parse(localStorage.getItem('qcResults') || '[]');
+                if (saved.length) {
+                    saved[saved.length - 1].synced = true;
+                    localStorage.setItem('qcResults', JSON.stringify(saved));
+                }
+                updateBadge();
+                updateStats();
+            } catch (e) {
+                console.error(e);
+                toast('⚠️ Saved locally, will sync later', false, 'warning');
+            }
+        }
+
+        async function syncPending() {
+            let saved = JSON.parse(localStorage.getItem('qcResults') || '[]');
+            const unsynced = saved.filter(r => !r.synced);
+
+            if (!unsynced.length) {
+                toast('All synced!');
+                return;
+            }
+
+            toast(`Syncing ${unsynced.length}...`);
+            let count = 0;
+
+            for (const r of unsynced) {
+                try {
+                    await fetch(API_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            fleekId: r.fleek_id, vendor: r.vendor, zoneStatus: r.zone_status,
+                            itemTitle: r.item_title, originalQty: r.original_qty, totalQCQty: r.qc_qty,
+                            normalA: r.normal_a || 0, normalB: r.normal_b || 0, normalC: r.normal_c || 0, normalQty: r.normal_qty || 0,
+                            oversizeA: r.oversize_a || 0, oversizeB: r.oversize_b || 0, oversizeC: r.oversize_c || 0, oversizeQty: r.oversize_qty || 0,
+                            undersizeA: r.undersize_a || 0, undersizeB: r.undersize_b || 0, undersizeC: r.undersize_c || 0, undersizeQty: r.undersize_qty || 0,
+                            reworkA: r.rework_a || 0, reworkB: r.rework_b || 0, reworkC: r.rework_c || 0, reworkQty: r.rework_qty || 0,
+                            fakeA: r.fake_a || 0, fakeB: r.fake_b || 0, fakeC: r.fake_c || 0, fakeQty: r.fake_qty || 0,
+                            otherBrandA: r.other_brand_a || 0, otherBrandB: r.other_brand_b || 0, otherBrandC: r.other_brand_c || 0, otherBrandQty: r.other_brand_qty || 0,
+                            missingTagsA: r.missing_tags_a || 0, missingTagsB: r.missing_tags_b || 0, missingTagsC: r.missing_tags_c || 0, missingTagsQty: r.missing_tags_qty || 0,
+                            qcerName: r.qcer_name, submittedAt: r.submitted_at
+                        })
+                    });
+                    r.synced = true;
+                    count++;
+                } catch (e) { }
+            }
+
+            localStorage.setItem('qcResults', JSON.stringify(saved));
+            updateBadge();
+            updateStats();
+            toast(`✅ Synced ${count}/${unsynced.length}`);
+        }
+
+        function exportCSV() {
+            const saved = JSON.parse(localStorage.getItem('qcResults') || '[]');
+            if (!saved.length) {
+                toast('No data to export', true);
+                return;
+            }
+
+            const headers = ['Fleek ID','Vendor','Zone','Item Title','Original Qty','QC Qty','Normal A','Normal B','Normal C','Normal Qty','Oversize A','Oversize B','Oversize C','Oversize Qty','Undersize A','Undersize B','Undersize C','Undersize Qty','Rework A','Rework B','Rework C','Rework Qty','Fake A','Fake B','Fake C','Fake Qty','Other Brand A','Other Brand B','Other Brand C','Other Brand Qty','Missing Tags A','Missing Tags B','Missing Tags C','Missing Tags Qty','QCer','Submitted At'];
+            
+            let csv = headers.join(',') + '\n';
+            saved.forEach(r => {
+                csv += [r.fleek_id, r.vendor, r.zone_status, `"${r.item_title}"`, r.original_qty, r.qc_qty,
+                    r.normal_a||'', r.normal_b||'', r.normal_c||'', r.normal_qty||'',
+                    r.oversize_a||'', r.oversize_b||'', r.oversize_c||'', r.oversize_qty||'',
+                    r.undersize_a||'', r.undersize_b||'', r.undersize_c||'', r.undersize_qty||'',
+                    r.rework_a||'', r.rework_b||'', r.rework_c||'', r.rework_qty||'',
+                    r.fake_a||'', r.fake_b||'', r.fake_c||'', r.fake_qty||'',
+                    r.other_brand_a||'', r.other_brand_b||'', r.other_brand_c||'', r.other_brand_qty||'',
+                    r.missing_tags_a||'', r.missing_tags_b||'', r.missing_tags_c||'', r.missing_tags_qty||'',
+                    r.qcer_name, r.submitted_at].join(',') + '\n';
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `QC_Export_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            toast(`📥 Exported ${saved.length} records`);
+        }
+
+        function showClearConfirm() {
+            if (confirm('⚠️ Clear all saved QC results? This cannot be undone!')) {
+                if (confirm('Are you ABSOLUTELY sure? This will delete all local data.')) {
+                    localStorage.removeItem('qcResults');
+                    localStorage.removeItem('completedItems');
+                    qcResults = [];
+                    completedItems.clear();
+                    updateBadge();
+                    updateStats();
+                    toast('🗑️ All data cleared');
+                    if (currentOrder) loadItems(currentOrder.fleek_id);
+                }
+            }
+        }
+
+        function loadSaved() {
+            qcResults = JSON.parse(localStorage.getItem('qcResults') || '[]');
+            const saved = JSON.parse(localStorage.getItem('completedItems') || '[]');
+            completedItems = new Set(saved);
+            updateBadge();
+        }
+
+        function updateBadge() {
+            const saved = JSON.parse(localStorage.getItem('qcResults') || '[]');
+            const count = saved.filter(r => !r.synced).length;
+            const badge = document.getElementById('syncBadge');
+            if (badge) {
+                badge.textContent = count;
+                badge.style.display = count > 0 ? 'block' : 'none';
+            }
+        }
+
+        function openVideoModal(fleekId, itemTitle, qty) {
+            uploadItemInfo = { 
+                fleekId: fleekId, 
+                itemTitle: itemTitle, 
+                qty: qty,
+                vendor: currentOrder.vendor 
+            };
+            
+            selectedVideoFile = null;
+            
+            document.getElementById('uploadFleekId').textContent = fleekId;
+            document.getElementById('uploadVendor').textContent = currentOrder.vendor;
+            document.getElementById('uploadItemName').textContent = itemTitle.length > 30 ? itemTitle.substring(0, 30) + '...' : itemTitle;
+            document.getElementById('uploadOrigQty').textContent = qty;
+            
+            document.getElementById('videoQcQty').value = '';
+            document.getElementById('videoFile').value = '';
+            document.getElementById('selectedFileInfo').style.display = 'none';
+            document.getElementById('uploadBtn').disabled = true;
+            document.getElementById('uploadProgress').classList.remove('active');
+            
+            updateUploadPreview();
+            
+            document.getElementById('videoModal').classList.add('active');
+        }
+
+        function closeVideoModal() {
+            document.getElementById('videoModal').classList.remove('active');
+            uploadItemInfo = null;
+            selectedVideoFile = null;
+        }
+
+        function updateUploadPreview() {
+            if (!uploadItemInfo) return;
+            
+            const qcQty = document.getElementById('videoQcQty').value || 'X';
+            
+            const folderName = uploadItemInfo.fleekId + '_' + uploadItemInfo.vendor.replace(/[^a-zA-Z0-9]/g, '_');
+            document.getElementById('uploadFolderName').textContent = folderName;
+            
+            const cleanItemTitle = uploadItemInfo.itemTitle.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 50);
+            const fileName = uploadItemInfo.fleekId + '_' + cleanItemTitle + '_' + qcQty + '.mp4';
+            document.getElementById('uploadFileName').textContent = fileName;
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            if (!file.type.startsWith('video/')) {
+                toast('Please select a video file', true);
+                return;
+            }
+            
+            if (file.size > 100 * 1024 * 1024) {
+                toast('File too large. Max 100MB', true);
+                return;
+            }
+            
+            selectedVideoFile = file;
+            displaySelectedFile(file);
+            checkUploadReady();
+        }
+
+        function displaySelectedFile(file) {
+            const fileSize = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+            const info = document.getElementById('selectedFileInfo');
+            
+            info.innerHTML = `
+                <div class="selected-file">
+                    <div class="selected-file-info">
+                        <i class="fas fa-file-video"></i>
+                        <div>
+                            <div class="selected-file-name">${file.name}</div>
+                            <div class="selected-file-size">${fileSize}</div>
+                        </div>
+                    </div>
+                    <button class="remove-file-btn" onclick="removeSelectedFile()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            
+            info.style.display = 'block';
+        }
+
+        function removeSelectedFile() {
+            selectedVideoFile = null;
+            document.getElementById('videoFile').value = '';
+            document.getElementById('selectedFileInfo').style.display = 'none';
+            document.getElementById('uploadBtn').disabled = true;
+        }
+
+        function checkUploadReady() {
+            const qcQty = document.getElementById('videoQcQty').value;
+            const hasFile = selectedVideoFile !== null;
+            const hasQty = qcQty && parseInt(qcQty) > 0;
+            
+            document.getElementById('uploadBtn').disabled = !(hasFile && hasQty);
+            
+            if (hasQty) {
+                updateUploadPreview();
+            }
+        }
+
+        document.getElementById('videoQcQty')?.addEventListener('input', () => {
+            checkUploadReady();
+        });
+
+        function setupDragAndDrop() {
+            const uploadArea = document.getElementById('uploadArea');
+            if (!uploadArea) return;
+            
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, () => {
+                    uploadArea.classList.add('drag-over');
+                }, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, () => {
+                    uploadArea.classList.remove('drag-over');
+                }, false);
+            });
+            
+            uploadArea.addEventListener('drop', (e) => {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                
+                if (files.length > 0) {
+                    document.getElementById('videoFile').files = files;
+                    handleFileSelect({ target: { files: files } });
+                }
+            }, false);
+        }
+
+        async function uploadVideo() {
+            if (!selectedVideoFile || !uploadItemInfo) {
+                toast('Please select a file and enter QC quantity', true);
+                return;
+            }
+            
+            const qcQty = document.getElementById('videoQcQty').value;
+            if (!qcQty || parseInt(qcQty) <= 0) {
+                toast('Please enter a valid QC quantity', true);
+                return;
+            }
+            
+            const uploadBtn = document.getElementById('uploadBtn');
+            const progressDiv = document.getElementById('uploadProgress');
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            
+            uploadBtn.disabled = true;
+            progressDiv.classList.add('active');
+            progressFill.style.width = '0%';
+            progressText.textContent = 'Preparing upload...';
+            
+            try {
+                progressFill.style.width = '20%';
+                progressText.textContent = 'Reading file...';
+                
+                const fileData = await fileToBase64(selectedVideoFile);
+                
+                progressFill.style.width = '40%';
+                progressText.textContent = 'Uploading to Google Drive...';
+                
+                const cleanItemTitle = uploadItemInfo.itemTitle.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 50);
+                const fileName = uploadItemInfo.fleekId + '_' + cleanItemTitle + '_' + qcQty + '.mp4';
+                
+                const uploadData = {
+                    action: 'uploadVideo',
+                    fleekId: uploadItemInfo.fleekId,
+                    vendor: uploadItemInfo.vendor,
+                    itemTitle: uploadItemInfo.itemTitle,
+                    qcQty: parseInt(qcQty),
+                    fileData: fileData,
+                    fileName: fileName,
+                    mimeType: selectedVideoFile.type
+                };
+                
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(uploadData)
+                });
+                
+                progressFill.style.width = '80%';
+                progressText.textContent = 'Processing...';
+                
+                const result = await response.json();
+                
+                progressFill.style.width = '100%';
+                
+                if (result.success) {
+                    progressText.textContent = 'Upload complete!';
+                    toast('✅ Video uploaded successfully!');
+                    
+                    setTimeout(() => {
+                        closeVideoModal();
+                    }, 1500);
+                } else {
+                    throw new Error(result.message || 'Upload failed');
+                }
+                
+            } catch (error) {
+                console.error('Upload error:', error);
+                progressFill.style.width = '0%';
+                progressDiv.classList.remove('active');
+                toast('❌ Upload failed: ' + error.message, true);
+                uploadBtn.disabled = false;
+            }
+        }
+
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const base64 = reader.result.split(',')[1];
+                    resolve(base64);
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function toast(msg, isError = false, type = '') {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.className = 'toast';
+            if (isError) t.classList.add('error');
+            if (type === 'warning') t.classList.add('warning');
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
+    </script>
+</body>
+</html>
